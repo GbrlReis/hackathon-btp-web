@@ -5,6 +5,8 @@ import * as moment from 'moment';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as _ from 'lodash';
 
+import { ActivityService } from '../../app/activity.service'
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -36,17 +38,14 @@ export class DashboardComponent implements OnInit {
     members: '',
   }
 
+  courses: any;
   nextDeadlinesActivities: any;
   allActivities: any;
 
   options = [
-    { name: 'Treinamento' },
-    { name: 'Certificado' },
-    { name: 'Mentoria interna' },
-    { name: 'Ciclos do diálogo e Town Hall Meeting' },
-    { name: 'Exame periódico dos colaboradores' },
-    { name: 'Trabalho voluntário da comunidade' },
-    { name: 'Melhoria no ambiente de trabalho' }
+    { value: 'training', name: 'Treinamento' },
+    { value: 'certification', name: 'Certificado' },
+    { value: 'video', name: 'VideoAula' }
   ]
 
   notifications = [
@@ -58,42 +57,10 @@ export class DashboardComponent implements OnInit {
     }
   ]
 
-  courses = [
-    {
-      id: 0,
-      title: 'Lorem Ipsum',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dignissim id nunc eget pulvinar. In maximus a mauris ac varius. Curabitur eget imperdiet ipsum. Phasellus id odio orci. Suspendisse lacus lacus, tincidunt ac congue et, pulvinar quis eros. Vivamus vehicula erat commodo mi tincidunt tristique. Cras sodales nec enim quis blandit. Praesent pulvinar congue lorem a placerat.',
-      category: 'Certificado',
-      duration: '2 horas',
-      date: moment().add(3, 'days'),
-      editing: false,
-      pdf: 'http://www.africau.edu/images/default/sample.pdf',
-      link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
-    },
-    {
-      id: 1,
-      title: 'Lorem Ipsum',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dignissim id nunc eget pulvinar. In maximus a mauris ac varius. Curabitur eget imperdiet ipsum. Phasellus id odio orci. Suspendisse lacus lacus, tincidunt ac congue et, pulvinar quis eros. Vivamus vehicula erat commodo mi tincidunt tristique. Cras sodales nec enim quis blandit. Praesent pulvinar congue lorem a placerat.',
-      category: 'Certificado',
-      duration: '2 horas',
-      date: moment().add(3, 'days'),
-      editing: false,
-      pdf: null,
-      link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
-    },
-    {
-      id: 2,
-      title: 'Lorem Ipsum',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dignissim id nunc eget pulvinar. In maximus a mauris ac varius. Curabitur eget imperdiet ipsum. Phasellus id odio orci. Suspendisse lacus lacus, tincidunt ac congue et, pulvinar quis eros. Vivamus vehicula erat commodo mi tincidunt tristique. Cras sodales nec enim quis blandit. Praesent pulvinar congue lorem a placerat.',
-      category: 'Certificado',
-      duration: '2 horas',
-      date: moment().add(10, 'days'),
-      editing: false,
-      pdf: null,
-      link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
-    },
-  ]
-  constructor() {
+
+  constructor(
+    private activityService: ActivityService
+  ) {
     this.courseFormGroup = new FormGroup({
       title: new FormControl(this.courseData.title, [
         Validators.required
@@ -108,10 +75,10 @@ export class DashboardComponent implements OnInit {
       ]),
       date: new FormControl(this.courseData.date, []),
       pdf: new FormControl(this.courseData.pdf, [
-        Validators.required
+
       ]),
       link: new FormControl(this.courseData.link, [
-        Validators.required
+
       ]),
       members: new FormControl(this.courseData.members, [
         Validators.required
@@ -123,20 +90,19 @@ export class DashboardComponent implements OnInit {
     this.todayDate = moment();
     this.month = this.months[moment().month()];
     this.showCalendar();
+    this.getActivities();
 
-    this.filterNextDeadlines();
-    this.filterAllActivities();
   }
 
   filterNextDeadlines() {
     this.nextDeadlinesActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isBetween(moment(), moment().add(7, 'days'));
+      return moment(course.date).isBetween(moment().format('YYYY-MM-DD'), moment().add(7, 'days').format('YYYY-MM-DD'));
     });
   }
 
   filterAllActivities() {
     this.allActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isAfter(moment().add(7, 'days'));
+      return moment(course.date).isAfter(moment().add(7, 'days').format('YYYY-MM-DD'));
     })
   }
 
@@ -205,7 +171,40 @@ export class DashboardComponent implements OnInit {
   submit() {
     this.submitted = true;
 
+    let activity = {
+      title: this.courseData.title,
+      description: this.courseData.description,
+      category: this.courseData.category,
+      duration: this.courseData.duration ? this.courseData.duration : null,
+      date: this.courseData.date ? moment(this.courseData.date).toISOString() : null,
+      pdf: this.courseData.pdf ? this.courseData.pdf : null,
+      link: this.courseData.link ? this.courseData.link : null,
+      members: this.courseData.members
+    }
 
+    this.activityService.saveActivity(activity);
+
+    this.getActivities();
+  }
+
+  getActivities() {
+    this.activityService.getActivities().subscribe((res) => {
+      this.submitted = false;
+      if (this.showSideModal) {
+        this.close();
+      }
+      _.forEach(res, (course) => {
+        let option = _.find(this.options, (option) => {
+          return option.value == course.category
+        });
+        course.categoryName = option.name
+      })
+      this.courses = res;
+      this.filterNextDeadlines();
+      this.filterAllActivities();
+    }, (err) => {
+      console.log('err', err);
+    })
   }
 
   reset() {
