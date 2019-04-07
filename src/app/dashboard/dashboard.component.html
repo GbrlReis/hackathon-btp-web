@@ -92,7 +92,7 @@
             Lista de cursos próximos do vencimento
           </h4>
           <ul>
-            <li *ngFor='let course of courses' (click)='viewDetails(course)'>
+            <li *ngFor='let course of courses' (click)='viewDetails("course", course)'>
               <div class='icon'></div>
               <div class='content'>
                 <label>
@@ -110,9 +110,14 @@
         </div>
       </section>
     </div>
-    <div class='background-details' (click)='viewDetails()' *ngIf='courseSelected'></div>
-    <div class='see-details' [ngClass]='{"see": courseSelected}'>
-
+    <div class='background-details' (click)='viewDetails()' *ngIf='showSideModal'></div>
+    <div class='see-details' [ngClass]='{"see": showSideModal}'>
+      <div *ngIf='sideModalType == "calendar"'>
+        oioioioi
+      </div>
+      <div *ngIf='sideModalType == "course"'>
+          oioioioi
+        </div>
     </div>
   </main>
 </div>

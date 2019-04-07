@@ -16,7 +16,8 @@ export class DashboardComponent implements OnInit {
   month : any;
   showLineUP : boolean = false;
   courseDetails: boolean = true;
-  courseSelected:boolean = false;
+  showSideModal:boolean = false;
+  sideModalType : any;
 
   courses = [
     { 
@@ -53,26 +54,38 @@ export class DashboardComponent implements OnInit {
       height: 10,
       header: {
         left: 'today prev next',
-        right: ''
+        right: 'addDate'
+      },
+      customButtons: {
+        addDate: {
+          text: 'Adicionar',
+          click: () => {
+            this.viewDetails('calendar');
+          }
+        }
       },
       buttonText: {
         today: 'Hoje'
-      }
-      
+      }      
     });
     calendar.render();
   }
 
-  toggleLineUp(){
+  addEvent(){
+    console.log('xddd');
+  }
+
+  toggleLineUp(){    
     this.showLineUP ? this.showLineUP = false : this.showLineUP = true;
   }
 
   toggleCourses(){
-    this.courseDetails ? this.courseDetails = false : this.courseDetails = true;
+    this.showSideModal ? this.showSideModal = false : this.showSideModal = true;
   }
   
-  viewDetails(course = null){
-    this.courseSelected ? this.courseSelected = false : this.courseSelected = true;
+  viewDetails(type, data = null){
+    this.sideModalType = type;
+    this.showSideModal ? this.showSideModal = false : this.showSideModal = true;
   }
 
 }
