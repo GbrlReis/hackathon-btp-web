@@ -123,7 +123,7 @@ export class DashboardComponent implements OnInit {
 
   filterNextDeadlines() {
     this.nextDeadlinesActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isBetween(moment().endOf('day').subtract(1, 'day').format('YYYY-MM-DD'), moment().endOf('day').add(7, 'days').format('YYYY-MM-DD'));
+      return moment(course.validate).isBetween(moment().endOf('day').subtract(1, 'day').format('YYYY-MM-DD'), moment().endOf('day').add(7, 'days').format('YYYY-MM-DD')) && course.validate;
     });
   }
 
