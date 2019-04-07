@@ -123,7 +123,7 @@ export class DashboardComponent implements OnInit {
 
   filterNextDeadlines() {
     this.nextDeadlinesActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isBetween(moment().startOf('day').format('YYYY-MM-DD'), moment().add(7, 'days').format('YYYY-MM-DD'));
+      return moment(course.date).isBetween(moment().endOf('day').subtract(1, 'day').format('YYYY-MM-DD'), moment().endOf('day').add(7, 'days').format('YYYY-MM-DD'));
     });
   }
 
@@ -183,7 +183,7 @@ export class DashboardComponent implements OnInit {
     this.sideModalType = type;
     this.showSideModal ? this.showSideModal = false : this.showSideModal = true;
 
-    this.courseData = data;
+    this.courseData = _.clone(data);
 
     if (type == 'add-course') {
       this.reset();
