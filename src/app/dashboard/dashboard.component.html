@@ -92,23 +92,27 @@
             Lista de cursos próximos do vencimento
           </h4>
           <ul>
-            <li>
+            <li *ngFor='let course of courses' (click)='viewDetails(course)'>
               <div class='icon'></div>
               <div class='content'>
                 <label>
-                  date
+                  {{ course.date | date: 'dd/MM/yyyy' }}
                 </label>
                 <h1>
-                  title
+                    {{ course.title }}
                 </h1>
                 <footer>
-                  description | tempo de duração
+                  <span>{{ course.category }} </span> | <b> {{ course.duration }} </b>
                 </footer>
               </div>
             </li>
           </ul>
         </div>
       </section>
+    </div>
+    <div class='background-details' (click)='viewDetails()' *ngIf='courseSelected'></div>
+    <div class='see-details' [ngClass]='{"see": courseSelected}'>
+
     </div>
   </main>
 </div>

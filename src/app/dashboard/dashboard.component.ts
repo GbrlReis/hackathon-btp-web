@@ -16,6 +16,23 @@ export class DashboardComponent implements OnInit {
   month : any;
   showLineUP : boolean = false;
   courseDetails: boolean = true;
+  courseSelected:boolean = false;
+
+  courses = [
+    { 
+      title: 'Lorem Ipsum',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dignissim id nunc eget pulvinar. In maximus a mauris ac varius. Curabitur eget imperdiet ipsum. Phasellus id odio orci. Suspendisse lacus lacus, tincidunt ac congue et, pulvinar quis eros. Vivamus vehicula erat commodo mi tincidunt tristique. Cras sodales nec enim quis blandit. Praesent pulvinar congue lorem a placerat.',
+      category: 'Certificado',
+      duration: '2 horas',
+      date: moment().add(3,'days'),
+      attachments: {
+        pdf: null,
+        ppt: null,
+        video: null,
+        link: null
+      }
+    }
+  ]
   constructor() { }
 
   ngOnInit() {
@@ -54,5 +71,8 @@ export class DashboardComponent implements OnInit {
     this.courseDetails ? this.courseDetails = false : this.courseDetails = true;
   }
   
+  viewDetails(course = null){
+    this.courseSelected ? this.courseSelected = false : this.courseSelected = true;
+  }
 
 }
