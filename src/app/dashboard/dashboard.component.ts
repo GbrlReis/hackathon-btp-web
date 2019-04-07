@@ -39,6 +39,14 @@ export class DashboardComponent implements OnInit {
   }
 
   courses: any;
+  calendarData = {
+    shipName: '',
+    status: '',
+    editing: false,
+    beginDate: '',
+    endDate: ''
+  }
+
   nextDeadlinesActivities: any;
   allActivities: any;
 
@@ -46,6 +54,11 @@ export class DashboardComponent implements OnInit {
     { value: 'training', name: 'Treinamento' },
     { value: 'certification', name: 'Certificado' },
     { value: 'video', name: 'VideoAula' }
+  ]
+
+  calendarStatus = [
+    { name: 'IN' },
+    { name: 'OUT' }
   ]
 
   notifications = [
@@ -81,6 +94,18 @@ export class DashboardComponent implements OnInit {
 
       ]),
       members: new FormControl(this.courseData.members, [
+        Validators.required
+      ]),
+      shipName: new FormControl(this.calendarData.shipName, [
+        Validators.required
+      ]),
+      status: new FormControl(this.calendarStatus, [
+        Validators.required
+      ]),
+      dateBegin: new FormControl(this.calendarData.beginDate, [
+        Validators.required
+      ]),
+      dateEnd: new FormControl(this.calendarData.endDate, [
         Validators.required
       ])
     })
