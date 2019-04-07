@@ -193,14 +193,14 @@ export class DashboardComponent implements OnInit {
         left: 'today prev next',
         right: 'addDate'
       },
-      customButtons: {
+      /* customButtons: {
         addDate: {
           text: 'Adicionar',
           click: () => {
             this.viewDetails('calendar');
           }
         }
-      },
+      }, */
       buttonText: {
         today: 'Hoje'
       }
