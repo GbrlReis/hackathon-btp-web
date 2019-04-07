@@ -1,5 +1,29 @@
 <div id='container'>
   <aside>
+    <h2>
+      <i class="fas fa-bell"></i> Notificações
+      <label>
+        Últimas recomendações e previsões.
+      </label>
+    </h2>
+    <ul>
+      <li class='animated faster slideInLeft' *ngFor='let notification of notifications'>
+        <div>
+          <i class="far fa-bell"></i>
+        </div>
+        <div>
+          <b>{{ notification.title }}</b>
+          <p>
+            {{ notification.subtitle }}
+            <br> {{ notification.message }}
+          </p>
+          <footer>
+            {{ notification.date | date: 'dd/MM/yyyy' }}, às {{notification.date | date: 'HH:mm'}}
+          </footer>
+        </div>
+      </li>
+
+    </ul>
   </aside>
   <main>
     <header>
@@ -10,20 +34,20 @@
         </h2>
         <p>
           Hoje é dia
-          <b>{{ todayDate | date: 'dd' }} de {{ month }} de {{ todayDate | date: 'yyyy' }}</b> e temos [ ... ] operações previstas.
+          <b>{{ todayDate | date: 'dd' }} de {{ month }} de {{ todayDate | date: 'yyyy' }}</b>
         </p>
       </div>
       <div class='weather-message'>
         <label>
-          Previsão de Tempo
+          Operações previstas para hoje
         </label>
         <p>
-          Nublado
+          1
         </p>
       </div>
     </header>
     <div class='wrapper'>
-      <section class='animated fast fadeIn' [ngClass]='{"detailsOptions": !courseDetails }'>
+      <section class='animated fast fadeIn' [ngClass]='{"detailsOptions": !courseData }'>
         <div class='wrapper-select' (click)='toggleLineUp()'>
           <div class='text'>
             <h3>
@@ -44,29 +68,6 @@
         </div>
         <div id='line-up'></div>
       </section>
-
-      <section class='animated fast fadeIn'>
-        <div class='wrapper-select' (click)='toggleCourses()'>
-          <div class='text'>
-            <h3>
-              Treinamentos e Certificados
-              <label *ngIf='showLineUp'>
-                Operações da Semana
-              </label>
-            </h3>
-            <div class='showLineUp'>
-              <p class='p-details'>
-                Verificar atividades com deadlines.
-              </p>
-            </div>
-          </div>
-          <div class='icon'>
-            <i class="far fa-calendar-alt"></i>
-          </div>
-          <div *ngIf='showLineUp' id='line-up'></div>
-        </div>
-      </section>
-
       <section class='animated fast fadeIn'>
         <div class='wrapper-select' (click)='toggleLineUp()'>
           <div class='text'>
@@ -83,26 +84,47 @@
             </div>
           </div>
           <div class='icon'>
-            <i class="far fa-calendar-alt"></i>
+            <i class="fas fa-clipboard-list"></i>
           </div>
           <div *ngIf='showLineUp' id='line-up'></div>
         </div>
         <div class='details-course'>
           <h4>
-            Lista de cursos próximos do vencimento
+            <i class="far fa-calendar-alt"></i> Lista de cursos próximos do vencimento
           </h4>
           <ul>
-            <li *ngFor='let course of courses' (click)='viewDetails("course", course)'>
+            <li *ngFor='let course of nextDeadlinesActivities' (click)='viewDetails("course", course)'>
+              <div class='icon'></div>
+              <div class='content'>
+                <label class='course-date'>
+                  {{ course.date | date: 'dd/MM/yyyy' }}
+                </label>
+                <h1>
+                  {{ course.title > 15 ? (course.title | slice:0:10) : course.title }}
+                </h1>
+                <footer>
+                  <span>{{ course.category }} </span> |
+                  <b> {{ course.duration }} </b>
+                </footer>
+              </div>
+            </li>
+          </ul>
+          <h4>
+            <i class="fas fa-tasks"></i> Todas atividades cadastradas
+          </h4>
+          <ul>
+            <li *ngFor='let course of allActivities' (click)='viewDetails("course", course)'>
               <div class='icon'></div>
               <div class='content'>
                 <label>
                   {{ course.date | date: 'dd/MM/yyyy' }}
                 </label>
                 <h1>
-                    {{ course.title }}
+                  {{ course.title > 15 ? (course.title | slice:0:10) : course.title }}
                 </h1>
                 <footer>
-                  <span>{{ course.category }} </span> | <b> {{ course.duration }} </b>
+                  <span>{{ course.category }} </span> |
+                  <b> {{ course.duration }} </b>
                 </footer>
               </div>
             </li>
@@ -116,8 +138,147 @@
         oioioioi
       </div>
       <div *ngIf='sideModalType == "course"'>
-          oioioioi
+        <div class='details-header'>
+          <div class='save circle-icon' *ngIf='courseData.editing' (click)='submit()'>
+            <i class="fas fa-check"></i>
+          </div>
+          <div class='circle-icon' (click)='editCourse(courseData)' [ngClass]='{"edit": courseData.editing}'>
+            <i *ngIf='!courseData.editing' class="fas fa-pen"></i>
+            <span *ngIf='courseData.editing'>Cancelar</span>
+          </div>
         </div>
+        <div class='details-content' *ngIf='!courseData.editing'>
+          <h3>
+            <label>
+              título
+            </label>
+            {{ courseData.title }}
+          </h3>
+          <p>
+            <label>
+              Descrição
+            </label>
+            {{ courseData.description }}
+          </p>
+
+          <p>
+            <label>
+              Duração
+            </label>
+            {{ courseData.duration }}
+          </p>
+          <p>
+            <label>
+              Capacidade
+            </label>
+            {{ courseData.members }}
+          </p>
+          <p>
+            <label>
+              Anexos
+            </label>
+          </p>
+          <ul class='attachments'>
+            <li>
+              <label>
+                Arquivo PDF
+              </label>
+              <a *ngIf='courseData.pdf' target="_blank" href={{courseData.pdf}}> Baixar arquivo </a>
+              <p *ngIf='!courseData.pdf'> Nenhum arquivo disponível</p>
+            </li>
+            <li>
+              <label>
+                Link
+              </label>
+                <a *ngIf='courseData.pdf' target="_blank" href={{courseData.link}}> Acessar vídeo </a>
+                <p *ngIf='!courseData.pdf'> Nenhum arquivo disponível</p>
+            </li>
+          </ul>
+        </div>
+        <div class='form-content' *ngIf='courseData.editing'>
+          <form [formGroup]="courseFormGroup" (keydown.enter)="submit()">
+            <div>
+              <label for='title'>
+                Título da Atividade
+              </label>
+              <input type="text" placeholder="Qual é o nome da atividade?" [(ngModel)]="courseData.title" formControlName="title" name="fullname"
+                required>
+              <div *ngIf="isValid('title')" class='error-message'>
+                Insira um título à atividade
+              </div>
+            </div>
+
+            <div>
+              <label for='description'>
+                Descreva a atividade
+              </label>
+              <input type="text" placeholder="Dê mais detalhes sobre o que será realizado" [(ngModel)]="courseData.description" formControlName="description"
+                name="fullname" required>
+              <div *ngIf="isValid('description')" class='error-message'>
+                Por favor, insira uma atividade
+              </div>
+            </div>
+
+            <div>
+              <label for='category'>
+                Selecione a categoria
+              </label>
+              <select [(ngModel)]='courseData.category' formControlName='category'>
+                <option *ngFor='let option of options' value='{{option.name}}'> {{option.name}} </option>
+              </select>
+              <div *ngIf="isValid('category')" class='error-message'>
+                Selecione uma categoria
+              </div>
+            </div>
+
+            <div>
+              <label for='duration'>
+                Duração
+              </label>
+              <input type="text" placeholder="Qual o tempo estimado de duração?" [(ngModel)]="courseData.duration" formControlName="duration"
+                name="fullname" required>
+            </div>
+
+            <div>
+              <label for='duration'>
+                Data de vencimento
+              </label>
+              <input type="date" placeholder="Existe alguma data de vencimento?" [(ngModel)]="courseData.date" formControlName="date" name="fullname"
+                required>
+            </div>
+
+            <div>
+              <label for='pdf'>
+                PDF
+              </label>
+              <input type="text" placeholder="Disponibilizar link do pdf" [(ngModel)]="courseData.pdf" formControlName="pdf" name="fullname"
+                required>
+              <div *ngIf="isValid('pdf')" class='error-message'>
+                Insira um link de pdf
+              </div>
+            </div>
+
+            <div>
+              <label for='link'>
+                Vídeo
+              </label>
+              <input type="text" placeholder="Disponibilizar link para vídeos" [(ngModel)]="courseData.link" formControlName="link" name="fullname"
+                required>
+              <div *ngIf="isValid('link')" class='error-message'>
+                Insira um link de video
+              </div>
+            </div>
+
+            <div>
+              <label for='link'>
+                Capacidade
+              </label>
+              <input type="text" placeholder="Quantas pessoas estarão envolvidas na atividade?" [(ngModel)]="courseData.members" formControlName="link"
+                name="fullname" required>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </main>
 </div>
