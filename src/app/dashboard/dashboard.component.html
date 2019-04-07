@@ -138,8 +138,52 @@
     </div>
     <div class='background-details' (click)='close()' *ngIf='showSideModal'></div>
     <div class='see-details' [ngClass]='{"see": showSideModal}'>
-      <div *ngIf='sideModalType == "calendar"'>
-        oioioioi
+      <div *ngIf='sideModalType == "calendar" || sideModalType == "addEventOnCalendar"'>
+        <div class="details-header">
+          <div class="save circle-icon" (click)='submit()'>
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+        <div class='form-content'>
+          <form [formGroup]="courseFormGroup" (keydown.enter)="submit()">
+            <div>
+              <label for='title'>
+                Nome da embarcação
+              </label>
+              <input type="text" placeholder="Qual é o nome da embarcação?" [(ngModel)]="calendarData.shipName" formControlName="shipName" name="fullname"
+                required>
+              <div *ngIf="isValid('title')" class='error-message'>
+                Insira o nome da embarcação
+              </div>
+            </div>
+
+            <div>
+              <label for='status'>
+                Selecione o status
+              </label>
+              <select [(ngModel)]='calendarData.status' formControlName='status'>
+                <option *ngFor='let status of calendarStatus' value='{{status.name}}'> {{status.name}} </option>
+              </select>
+              <div *ngIf="isValid('status')" class='error-message'>
+                Selecione um status
+              </div>
+            </div>
+
+            <div>
+              <label for='dtInicial'>
+                Data Inicial
+              </label>
+              <input type="date" placeholder="Qual data inicial da atracaçaão?" [(ngModel)]="calendarData.beginDate" formControlName="dateBegin" name="dateBegin" required>
+            </div>
+
+            <div>
+                <label for='dtFinal'>
+                  Data Final
+                </label>
+                <input type="date" placeholder="Qual data final da atracação?" [(ngModel)]="calendarData.endDate" formControlName="dateEnd" name="dateBegin" required>
+              </div>
+          </form>
+        </div>
       </div>
       <div *ngIf='sideModalType == "course" || sideModalType == "add-course"'>
         <div class='details-header'>
