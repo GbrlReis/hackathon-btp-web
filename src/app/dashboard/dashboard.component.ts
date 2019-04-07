@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as _ from 'lodash';
 import { ActivitiesService } from '../activities.service';
 import { LineupsService } from '../lineups.service';
+import { WatsonService } from '../watson.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -71,18 +72,14 @@ export class DashboardComponent implements OnInit {
   ]
 
   notifications = [
-    {
-      title: 'Previsão de tempo atualizada',
-      subtitle: 'Tempo está nublado',
-      message: 'Devido ao histórico, existe a possibilidade de 64% de operações atrasarem e/ou serem canceladas.',
-      date: moment()
-    }
+    
   ]
 
 
   constructor(
     private activityService: ActivitiesService,
-    private lineupsService: LineupsService
+    private lineupsService: LineupsService,
+    private watsonService: WatsonService
   ) {
     this.courseFormGroup = new FormGroup({
       title: new FormControl(this.courseData.title, [
@@ -140,9 +137,25 @@ export class DashboardComponent implements OnInit {
     
     this.getActivities();
     this.lineupsService.getLineUps().subscribe((has) => {
-      this.lineups = has;
+      this.lineups = [
+        ...this.lineupsService.getJsonLineups().map((lineup) => {
+          return {
+            dtBerthWindow : lineup.dtBerthWindow,
+            dtPrevistaBarra : lineup.dtPrevistaBarra,
+            dtPrevisaoAtracacao : lineup.dtPrevisaoAtracacao,
+            dtPrevistaDesatracacao : lineup.dtPrevistaDesatracacao,
+            nomeNavio : lineup.nomeNavio,
+            armador : lineup.armador,
+            berco : lineup.berco,
+            servico : lineup.servico
+          }
+        }),
+        ...has
+      ];
       this.showCalendar();
     });
+
+    this.watsonNotifications();
 
   }
 
@@ -304,5 +317,33 @@ export class DashboardComponent implements OnInit {
   close() {
     this.reset();
     this.showSideModal = false;
+  }
+
+  watsonNotifications(){
+    let linesups = this.lineupsService.getJsonLineups();
+
+    linesups.filter((lineup) => {
+      return moment(lineup.dtPrevistaBarra).isBefore(moment().endOf('day'))
+    })
+    .forEach((lineup) => {
+      this.watsonService.getProbability(
+        lineup.dtBerthWindow,
+        lineup.dtPrevistaBarra,
+        lineup.dtPrevisaoAtracacao,
+        lineup.dtPrevistaDesatracacao,
+        lineup.nomeNavio,
+        lineup.armador,
+        lineup.berco,
+        lineup.servico,
+      )
+      .then((result:any) => {
+        this.notifications.push({
+          title: 'Navio ' + lineup.nomeNavio,
+          subtitle: lineup.armador,
+          message: 'Devido ao histórico, existe a possibilidade de ' + (result.OUT*100).toFixed(2) + '% de operações atrasarem e/ou serem canceladas.',
+          date: moment()
+        });
+      })
+    })
   }
 }
