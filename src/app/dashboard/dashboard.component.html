@@ -84,7 +84,7 @@
             </div>
           </div>
           <div class='icon'>
-            <i class="fas fa-clipboard-list"></i>
+            <i class="fas fa-plus-circle" (click)='viewDetails("add-course")'></i>
           </div>
           <div *ngIf='showLineUp' id='line-up'></div>
         </div>
@@ -132,19 +132,19 @@
         </div>
       </section>
     </div>
-    <div class='background-details' (click)='viewDetails()' *ngIf='showSideModal'></div>
+    <div class='background-details' (click)='close()' *ngIf='showSideModal'></div>
     <div class='see-details' [ngClass]='{"see": showSideModal}'>
       <div *ngIf='sideModalType == "calendar"'>
         oioioioi
       </div>
-      <div *ngIf='sideModalType == "course"'>
+      <div *ngIf='sideModalType == "course" || sideModalType == "add-course"'>
         <div class='details-header'>
           <div class='save circle-icon' *ngIf='courseData.editing' (click)='submit()'>
             <i class="fas fa-check"></i>
           </div>
           <div class='circle-icon' (click)='editCourse(courseData)' [ngClass]='{"edit": courseData.editing}'>
             <i *ngIf='!courseData.editing' class="fas fa-pen"></i>
-            <span *ngIf='courseData.editing'>Cancelar</span>
+            <span *ngIf='courseData.editing' (click)='close(course)'>Cancelar</span>
           </div>
         </div>
         <div class='details-content' *ngIf='!courseData.editing'>
@@ -190,8 +190,8 @@
               <label>
                 Link
               </label>
-                <a *ngIf='courseData.pdf' target="_blank" href={{courseData.link}}> Acessar vídeo </a>
-                <p *ngIf='!courseData.pdf'> Nenhum arquivo disponível</p>
+              <a *ngIf='courseData.pdf' target="_blank" href={{courseData.link}}> Acessar vídeo </a>
+              <p *ngIf='!courseData.pdf'> Nenhum arquivo disponível</p>
             </li>
           </ul>
         </div>

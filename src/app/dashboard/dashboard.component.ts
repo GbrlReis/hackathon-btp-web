@@ -20,9 +20,9 @@ export class DashboardComponent implements OnInit {
   showSideModal: boolean = false;
   sideModalType: any;
   courseFormGroup: FormGroup;
-  submitted:any;
-  deadlineCourses:any;
-  allCourses:any;
+  submitted: any;
+  deadlineCourses: any;
+  allCourses: any;
 
   courseData = {
     title: '',
@@ -36,17 +36,17 @@ export class DashboardComponent implements OnInit {
     members: '',
   }
 
-  nextDeadlinesActivities:any;
-  allActivities:any;
+  nextDeadlinesActivities: any;
+  allActivities: any;
 
   options = [
     { name: 'Treinamento' },
     { name: 'Certificado' },
     { name: 'Mentoria interna' },
     { name: 'Ciclos do diálogo e Town Hall Meeting' },
-    { name: 'Exame periódico dos colaboradores'}, 
-    { name: 'Trabalho voluntário da comunidade'},
-    { name: 'Melhoria no ambiente de trabalho'}
+    { name: 'Exame periódico dos colaboradores' },
+    { name: 'Trabalho voluntário da comunidade' },
+    { name: 'Melhoria no ambiente de trabalho' }
   ]
 
   notifications = [
@@ -67,8 +67,8 @@ export class DashboardComponent implements OnInit {
       duration: '2 horas',
       date: moment().add(3, 'days'),
       editing: false,
-        pdf: 'http://www.africau.edu/images/default/sample.pdf',
-        link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
+      pdf: 'http://www.africau.edu/images/default/sample.pdf',
+      link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
     },
     {
       id: 1,
@@ -78,8 +78,8 @@ export class DashboardComponent implements OnInit {
       duration: '2 horas',
       date: moment().add(3, 'days'),
       editing: false,
-        pdf: null,
-        link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
+      pdf: null,
+      link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
     },
     {
       id: 2,
@@ -89,8 +89,8 @@ export class DashboardComponent implements OnInit {
       duration: '2 horas',
       date: moment().add(10, 'days'),
       editing: false,
-        pdf: null,
-        link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
+      pdf: null,
+      link: 'https://www.youtube.com/embed/gsjy1hbyF_8'
     },
   ]
   constructor() {
@@ -128,20 +128,20 @@ export class DashboardComponent implements OnInit {
     this.filterAllActivities();
   }
 
-  filterNextDeadlines(){
+  filterNextDeadlines() {
     this.nextDeadlinesActivities = _.filter(this.courses, (course) => {
       return moment(course.date).isBetween(moment(), moment().add(7, 'days'));
     });
   }
 
-  filterAllActivities(){
+  filterAllActivities() {
     this.allActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isAfter(moment().add(7, 'days')); 
+      return moment(course.date).isAfter(moment().add(7, 'days'));
     })
   }
 
 
-  isValid(field){
+  isValid(field) {
     return !this.courseFormGroup.controls[field].valid && (this.courseFormGroup.controls[field].dirty || this.submitted)
   }
 
@@ -189,8 +189,12 @@ export class DashboardComponent implements OnInit {
   viewDetails(type, data = null) {
     this.sideModalType = type;
     this.showSideModal ? this.showSideModal = false : this.showSideModal = true;
-    if (this.sideModalType == 'course') {
-      this.courseData = data;
+
+    this.courseData = data;
+
+    if (type == 'add-course') {
+      this.reset();
+      this.courseData.editing = true;
     }
   }
 
@@ -198,9 +202,31 @@ export class DashboardComponent implements OnInit {
     course.editing ? course.editing = false : course.editing = true;
   }
 
-  submit(){
+  submit() {
     this.submitted = true;
 
 
+  }
+
+  reset() {
+    this.courseData = {
+      title: '',
+      description: '',
+      category: '',
+      duration: '',
+      date: '',
+      editing: false,
+      pdf: '',
+      link: '',
+      members: '',
+    }
+    _.forEach(this.courses, (course) => {
+      course.editing = false;
+    })
+  }
+
+  close() {
+    this.reset();
+    this.showSideModal = false;
   }
 }
