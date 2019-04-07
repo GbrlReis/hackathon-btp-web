@@ -1,0 +1,114 @@
+<div id='container'>
+  <aside>
+  </aside>
+  <main>
+    <header>
+      <div class='welcome-message'>
+        <h2>
+          Boa tarde,
+          <b>Operador</b>
+        </h2>
+        <p>
+          Hoje é dia
+          <b>{{ todayDate | date: 'dd' }} de {{ month }} de {{ todayDate | date: 'yyyy' }}</b> e temos [ ... ] operações previstas.
+        </p>
+      </div>
+      <div class='weather-message'>
+        <label>
+          Previsão de Tempo
+        </label>
+        <p>
+          Nublado
+        </p>
+      </div>
+    </header>
+    <div class='wrapper'>
+      <section class='animated fast fadeIn' [ngClass]='{"detailsOptions": !courseDetails }'>
+        <div class='wrapper-select' (click)='toggleLineUp()'>
+          <div class='text'>
+            <h3>
+              Line Up
+              <label *ngIf='showLineUp'>
+                Operações da Semana
+              </label>
+            </h3>
+            <div class='showLineUp'>
+              <p class='p-details'>
+                Toque para ver o Line Up planejado para a semana.
+              </p>
+            </div>
+          </div>
+          <div class='icon'>
+            <i class="far fa-calendar-alt"></i>
+          </div>
+        </div>
+        <div id='line-up'></div>
+      </section>
+
+      <section class='animated fast fadeIn'>
+        <div class='wrapper-select' (click)='toggleCourses()'>
+          <div class='text'>
+            <h3>
+              Treinamentos e Certificados
+              <label *ngIf='showLineUp'>
+                Operações da Semana
+              </label>
+            </h3>
+            <div class='showLineUp'>
+              <p class='p-details'>
+                Verificar atividades com deadlines.
+              </p>
+            </div>
+          </div>
+          <div class='icon'>
+            <i class="far fa-calendar-alt"></i>
+          </div>
+          <div *ngIf='showLineUp' id='line-up'></div>
+        </div>
+      </section>
+
+      <section class='animated fast fadeIn'>
+        <div class='wrapper-select' (click)='toggleLineUp()'>
+          <div class='text'>
+            <h3>
+              Materiais e Cursos
+              <label *ngIf='showLineUp'>
+                Operações da Semana
+              </label>
+            </h3>
+            <div class='showLineUp'>
+              <p class='p-details'>
+                Gerenciar o cadastro de certificados e cursos.
+              </p>
+            </div>
+          </div>
+          <div class='icon'>
+            <i class="far fa-calendar-alt"></i>
+          </div>
+          <div *ngIf='showLineUp' id='line-up'></div>
+        </div>
+        <div class='details-course'>
+          <h4>
+            Lista de cursos próximos do vencimento
+          </h4>
+          <ul>
+            <li>
+              <div class='icon'></div>
+              <div class='content'>
+                <label>
+                  date
+                </label>
+                <h1>
+                  title
+                </h1>
+                <footer>
+                  description | tempo de duração
+                </footer>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
