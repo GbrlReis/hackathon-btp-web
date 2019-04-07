@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 
 import { ActivityService } from '../../app/activity.service'
 import { ActivitiesService } from '../activities.service';
+import { LineupsService } from '../lineups.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,13 +41,20 @@ export class DashboardComponent implements OnInit {
     members: '',
   }
 
+  lineups: any;
+
   courses: any;
+
   calendarData = {
-    shipName: '',
-    status: '',
-    editing: false,
-    beginDate: '',
-    endDate: ''
+    nomeNavio: "",
+    armador: "",
+    berco: "",
+    dtPrevistaBarra: "",
+    dtPrevisaoAtracacao: "",
+    dtPrevistaDesatracacao: "",
+    dtBerthWindow: "",
+    servico: "",
+    editing: false
   }
 
   nextDeadlinesActivities: any;
@@ -74,7 +82,8 @@ export class DashboardComponent implements OnInit {
 
 
   constructor(
-    private activityService: ActivitiesService
+    private activityService: ActivitiesService,
+    private lineupsService: LineupsService
   ) {
     this.courseFormGroup = new FormGroup({
       title: new FormControl(this.courseData.title, [
@@ -98,16 +107,28 @@ export class DashboardComponent implements OnInit {
       members: new FormControl(this.courseData.members, [
         Validators.required
       ]),
-      shipName: new FormControl(this.calendarData.shipName, [
+      nomeNavio: new FormControl(this.calendarData.nomeNavio, [
         Validators.required
       ]),
-      status: new FormControl(this.calendarStatus, [
+      armador: new FormControl(this.calendarData.armador, [
         Validators.required
       ]),
-      dateBegin: new FormControl(this.calendarData.beginDate, [
+      berco: new FormControl(this.calendarData.berco , [
         Validators.required
       ]),
-      dateEnd: new FormControl(this.calendarData.endDate, [
+      dtPrevistaBarra: new FormControl(this.calendarData.dtPrevistaBarra , [
+        Validators.required
+      ]),
+      dtPrevisaoAtracacao: new FormControl(this.calendarData.dtPrevisaoAtracacao , [
+        Validators.required
+      ]),
+      dtPrevistaDesatracacao: new FormControl(this.calendarData.dtPrevistaDesatracacao , [
+        Validators.required
+      ]),
+      dtBerthWindow: new FormControl(this.calendarData.dtBerthWindow , [
+        Validators.required
+      ]),
+      servico: new FormControl(this.calendarData.servico , [
         Validators.required
       ])
     })
@@ -116,12 +137,16 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.todayDate = moment();
     this.month = this.months[moment().month()];
-    this.showCalendar();
+    
     this.getActivities();
+    this.lineupsService.getLineUps().subscribe((has) => {
+      this.lineups = has;
+      this.showCalendar();
+    });
 
   }
 
-  filterNextDeadlines() {
+  filterNextDeadlines() {this
     this.nextDeadlinesActivities = _.filter(this.courses, (course) => {
       return moment(course.date).isBetween(moment().startOf('day').format('YYYY-MM-DD'), moment().add(7, 'days').format('YYYY-MM-DD'));
     });
@@ -142,11 +167,14 @@ export class DashboardComponent implements OnInit {
   showCalendar() {
     let calendarEl = document.getElementById('line-up');
 
+    let addEvents = this.lineups.map(data =>({title: data.nomeNavio, start: data.dtPrevisaoAtracacao, end: data.dtPrevistaDesatracacao}));
+
     let calendar = new Calendar(calendarEl, {
       plugins: [timeGridPlugin],
       defaultView: 'timeGridWeek',
       timeZone: 'UTC',
       editable: true,
+      events: addEvents,
       locale: 'pt',
       height: 10,
       header: {
@@ -166,10 +194,6 @@ export class DashboardComponent implements OnInit {
       }
     });
     calendar.render();
-  }
-
-  addEvent() {
-    console.log('xddd');
   }
 
   toggleLineUp() {
@@ -194,6 +218,26 @@ export class DashboardComponent implements OnInit {
 
   editCourse(course) {
     course.editing ? course.editing = false : course.editing = true;
+  }
+
+
+  submitEventOnCalendar(){
+    this.submitted = true;
+
+    let calendarEVent = {
+      nomeNavio: this.calendarData.nomeNavio,
+      armador: this.calendarData.armador,
+      berco: this.calendarData.berco,
+      dtPrevistaBarra: this.calendarData.dtPrevistaBarra,
+      dtPrevisaoAtracacao: this.calendarData.dtPrevisaoAtracacao,
+      dtPrevistaDesatracacao: this.calendarData.dtPrevistaDesatracacao,
+      dtBerthWindow: this.calendarData.dtBerthWindow,
+      servico: this.calendarData.servico
+    }
+
+    this.lineupsService.saveLineup(calendarEVent)
+    this.getActivities();
+
   }
 
   submit() {

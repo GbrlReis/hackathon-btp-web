@@ -140,17 +140,17 @@
     <div class='see-details' [ngClass]='{"see": showSideModal}'>
       <div *ngIf='sideModalType == "calendar" || sideModalType == "addEventOnCalendar"'>
         <div class="details-header">
-          <div class="save circle-icon" (click)='submit()'>
+          <div class="save circle-icon" (click)='submitEventOnCalendar()'>
             <i class="fas fa-check"></i>
           </div>
         </div>
         <div class='form-content'>
-          <form [formGroup]="courseFormGroup" (keydown.enter)="submit()">
+          <form [formGroup]="courseFormGroup" (keydown.enter)="submitEventOnCalendar()">
             <div>
               <label for='title'>
                 Nome da embarcação
               </label>
-              <input type="text" placeholder="Qual é o nome da embarcação?" [(ngModel)]="calendarData.shipName" formControlName="shipName" name="fullname"
+              <input type="text" placeholder="Qual é o nome da embarcação?" [(ngModel)]="calendarData.nomeNavio" formControlName="nomeNavio" name="fullname"
                 required>
               <div *ngIf="isValid('title')" class='error-message'>
                 Insira o nome da embarcação
@@ -158,30 +158,65 @@
             </div>
 
             <div>
-              <label for='status'>
-                Selecione o status
+              <label for='title'>
+                Armador
               </label>
-              <select [(ngModel)]='calendarData.status' formControlName='status'>
-                <option *ngFor='let status of calendarStatus' value='{{status.name}}'> {{status.name}} </option>
-              </select>
-              <div *ngIf="isValid('status')" class='error-message'>
-                Selecione um status
+              <input type="text" placeholder="Armador" [(ngModel)]="calendarData.armador" formControlName="armador" name="fullname"
+                required>
+              <div *ngIf="isValid('title')" class='error-message'>
+                Informe o armador
               </div>
             </div>
 
             <div>
-              <label for='dtInicial'>
-                Data Inicial
+              <label for='title'>
+                Berço
               </label>
-              <input type="date" placeholder="Qual data inicial da atracaçaão?" [(ngModel)]="calendarData.beginDate" formControlName="dateBegin" name="dateBegin" required>
+              <input type="text" placeholder="berco" [(ngModel)]="calendarData.berco" formControlName="berco" name="fullname"
+                required>
+              <div *ngIf="isValid('title')" class='error-message'>
+                Informe o berço
+              </div>
             </div>
 
             <div>
-                <label for='dtFinal'>
-                  Data Final
-                </label>
-                <input type="date" placeholder="Qual data final da atracação?" [(ngModel)]="calendarData.endDate" formControlName="dateEnd" name="dateBegin" required>
+              <label for='dtPrevistaBarra'>
+                Data Prevista da Barra
+              </label>
+              <input type="date" placeholder="Qual data inicial da Barra?" [(ngModel)]="calendarData.dtPrevistaBarra" formControlName="dtPrevistaBarra" name="dtPrevistaBarra" required>
+            </div>
+
+            <div>
+              <label for='dtPrevisaoAtracacao'>
+                Data Prevista de atracação?
+              </label>
+              <input type="datetime-local" placeholder="Qual data inicial da atracação?" [(ngModel)]="calendarData.dtPrevisaoAtracacao" formControlName="dtPrevisaoAtracacao" name="dtPrevisaoAtracacao" required>
+            </div>
+
+            <div>
+              <label for='dtPrevistaDesatracacao'>
+                Data Prevista de Desatracação?
+              </label>
+              <input type="datetime-local" placeholder="Qual data inicial de desatracação?" [(ngModel)]="calendarData.dtPrevistaDesatracacao" formControlName="dtPrevistaDesatracacao" name="dtPrevistaDesatracacao" required>
+            </div>
+
+            <div>
+              <label for='dtBerthWindow'>
+                Data da janela?
+              </label>
+              <input type="date" placeholder="Qual data inicial da janela?" [(ngModel)]="calendarData.dtBerthWindow" formControlName="dtBerthWindow" name="dtBerthWindow" required>
+            </div>
+
+            <div>
+              <label for='title'>
+                Serviço
+              </label>
+              <input type="text" placeholder="servico" [(ngModel)]="calendarData.servico" formControlName="servico" name="fullname"
+                required>
+              <div *ngIf="isValid('title')" class='error-message'>
+                Informe o serviço
               </div>
+            </div>
           </form>
         </div>
       </div>
