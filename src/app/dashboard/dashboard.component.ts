@@ -183,7 +183,8 @@ export class DashboardComponent implements OnInit {
     this.sideModalType = type;
     this.showSideModal ? this.showSideModal = false : this.showSideModal = true;
 
-    this.courseData = _.clone(data);
+    if(data)
+      this.courseData = _.clone(data);
     this.courseData.date = moment(this.courseData.date).format('YYYY-MM-DD');
 
     if (type == 'add-course') {
