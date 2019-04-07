@@ -4,8 +4,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import * as moment from 'moment';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as _ from 'lodash';
-
-import { ActivityService } from '../../app/activity.service'
 import { ActivitiesService } from '../activities.service';
 
 @Component({
@@ -34,6 +32,7 @@ export class DashboardComponent implements OnInit {
     category: '',
     duration: '',
     date: '',
+    validate: '',
     editing: false,
     pdf: '',
     link: '',
@@ -86,6 +85,7 @@ export class DashboardComponent implements OnInit {
       category: new FormControl(this.courseData.category, [
         Validators.required
       ]),
+      validate: new FormControl(this.courseData.validate, []),
       duration: new FormControl(this.courseData.duration, [
       ]),
       date: new FormControl(this.courseData.date, []),
@@ -129,7 +129,6 @@ export class DashboardComponent implements OnInit {
 
   filterAllActivities() {
     this.allActivities = _.filter(this.courses, (course) => {
-      // arrumar
       return moment(course.date).isAfter(moment().add(7, 'days').format('YYYY-MM-DD')) || !course.date;
     })
   }
@@ -203,6 +202,7 @@ export class DashboardComponent implements OnInit {
       id: this.courseData.id ? this.courseData.id : null,
       title: this.courseData.title,
       description: this.courseData.description,
+      validate: this.courseData.validate,
       category: this.courseData.category,
       duration: this.courseData.duration ? this.courseData.duration : null,
       date: this.courseData.date ? moment(this.courseData.date).toISOString() : null,
@@ -248,6 +248,7 @@ export class DashboardComponent implements OnInit {
       pdf: '',
       link: '',
       members: '',
+      validate: ''
     }
     _.forEach(this.courses, (course) => {
       course.editing = false;
