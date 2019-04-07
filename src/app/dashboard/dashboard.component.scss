@@ -498,3 +498,36 @@ label.course-date {
         }
     }
 }
+
+@media (max-width: 1024px){
+    .ul-courses {
+        li {
+            width: 100% !important;
+        }
+    }
+    aside {
+        width: 100% !important; 
+        ul {
+            max-height: 100px;
+            overflow: auto;
+            overflow: auto;
+            li {
+                width: 100%;
+            }
+        }
+    }
+    main {
+        width: 100% !important;
+    }
+    #container {
+        flex-direction: column;
+    }
+    header {
+        display:flex;
+        flex-direction: column;
+        div {
+            width: 100% !important;
+            align-items: flex-start !important
+        }
+    }
+}

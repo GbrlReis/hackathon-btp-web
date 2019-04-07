@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as _ from 'lodash';
 
 import { ActivityService } from '../../app/activity.service'
+import { ActivitiesService } from '../activities.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,6 +28,7 @@ export class DashboardComponent implements OnInit {
   allCourses: any;
 
   courseData = {
+    id : null,
     title: '',
     description: '',
     category: '',
@@ -45,7 +47,7 @@ export class DashboardComponent implements OnInit {
   options = [
     { value: 'training', name: 'Treinamento' },
     { value: 'certification', name: 'Certificado' },
-    { value: 'video', name: 'VideoAula' }
+    { value: 'video', name: 'Video Aula' }
   ]
 
   notifications = [
@@ -59,7 +61,7 @@ export class DashboardComponent implements OnInit {
 
 
   constructor(
-    private activityService: ActivityService
+    private activityService: ActivitiesService
   ) {
     this.courseFormGroup = new FormGroup({
       title: new FormControl(this.courseData.title, [
@@ -96,13 +98,14 @@ export class DashboardComponent implements OnInit {
 
   filterNextDeadlines() {
     this.nextDeadlinesActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isBetween(moment().format('YYYY-MM-DD'), moment().add(7, 'days').format('YYYY-MM-DD'));
+      return moment(course.date).isBetween(moment().startOf('day').format('YYYY-MM-DD'), moment().add(7, 'days').format('YYYY-MM-DD'));
     });
   }
 
   filterAllActivities() {
     this.allActivities = _.filter(this.courses, (course) => {
-      return moment(course.date).isAfter(moment().add(7, 'days').format('YYYY-MM-DD'));
+      // arrumar
+      return moment(course.date).isAfter(moment().add(7, 'days').format('YYYY-MM-DD')) || !course.date;
     })
   }
 
@@ -172,6 +175,7 @@ export class DashboardComponent implements OnInit {
     this.submitted = true;
 
     let activity = {
+      id: this.courseData.id ? this.courseData.id : null,
       title: this.courseData.title,
       description: this.courseData.description,
       category: this.courseData.category,
@@ -209,6 +213,7 @@ export class DashboardComponent implements OnInit {
 
   reset() {
     this.courseData = {
+      id : null,
       title: '',
       description: '',
       category: '',
