@@ -28,8 +28,7 @@
     <header>
       <div class='welcome-message'>
         <h2>
-          Olá,
-          <b>Operador</b>
+            <i class="fas fa-columns"></i> Olá, Operador
         </h2>
         <p>
           Hoje é dia
@@ -38,10 +37,10 @@
       </div>
       <div class='weather-message'>
         <label>
-          Operações previstas para hoje
+          Operações previstas
         </label>
         <p>
-          1
+          ....
         </p>
       </div>
     </header>
@@ -97,7 +96,7 @@
                 <div class='icon'></div>
                 <div class='content'>
                   <label class='course-date'>
-                    {{ course.date | date: 'dd/MM/yyyy' }}
+                    {{ course.validate | date: 'dd/MM/yyyy' }}
                   </label>
                   <h1>
                     {{ course.title > 15 ? (course.title | slice:0:10) : course.title }}
@@ -111,9 +110,9 @@
             </ul>
           </div>
           <h4>
-            <i class="fas fa-tasks"></i> Todas atividades cadastradas
+            <i class="fas fa-tasks"></i> Todas atividades agendadas
           </h4>
-          <p>
+          <p *ngIf='!allActivities || allActivities.length == 0'>
             Nenhuma atividade cadastrada.
           </p>
           <ul class='ul-courses'>
@@ -324,11 +323,19 @@
 
             <div>
               <label for='duration'>
-                Data de vencimento
+                Agendamento
               </label>
-              <input type="date" placeholder="Existe alguma data de vencimento?" [(ngModel)]="courseData.date" formControlName="date" name="fullname"
+              <input type="date" placeholder="Existe alguma data de vencimento?" [(ngModel)]="courseData.date" formControlName="date" name="date"
                 required>
             </div>
+
+            <div>
+                <label for='validate'>
+                  Data de vencimento
+                </label>
+                <input type="date" placeholder="Existe alguma data de vencimento?" [(ngModel)]="courseData.validate" formControlName="validate" name="validate"
+                  required>
+              </div>
 
             <div>
               <label for='pdf'>

@@ -106,11 +106,13 @@ label.course-date {
                 width: 85%;
                 margin: auto;
                 display: flex;
-                > div:first-child {
+
+                >div:first-child {
                     color: #fff;
                     padding-right: 10px;
                     padding-top: 5px;
                 }
+
                 b {
                     font-size: .75em;
                 }
@@ -195,6 +197,7 @@ label.course-date {
                         color: rgba(0, 0, 0, .9);
                         background-color: #fff;
                         color: darken(#2980b9, 40%);
+
                         &:hover {
                             transform: scale(.85);
                         }
@@ -307,7 +310,11 @@ label.course-date {
 
                 h2,
                 b {
-                    font-weight: 500
+                    font-weight: 400;
+                    font-size: 16px;
+                    i {
+                        padding-right: 10px;
+                    }
                 }
 
                 p {
@@ -499,35 +506,57 @@ label.course-date {
     }
 }
 
-@media (max-width: 1024px){
+@media (max-width: 1024px) {
     .ul-courses {
         li {
             width: 100% !important;
         }
     }
+
     aside {
-        width: 100% !important; 
+        width: 100% !important;
+
         ul {
             max-height: 100px;
             overflow: auto;
             overflow: auto;
+
             li {
                 width: 100%;
             }
         }
     }
+
     main {
         width: 100% !important;
     }
+
     #container {
         flex-direction: column;
     }
+
     header {
-        display:flex;
+        display: flex;
         flex-direction: column;
+
         div {
             width: 100% !important;
             align-items: flex-start !important
         }
     }
+
+    section,
+    .wrapper {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 5px !important;
+    }
+
+   #container main .see-details.see {
+       width: 80% !important;
+   }
+
+   #container section .icon {
+       background-size: 30%
+   }
 }
